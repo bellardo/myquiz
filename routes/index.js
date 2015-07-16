@@ -13,7 +13,7 @@ router.get('/', function(req, res) {
 router.param('quizId', quizController.load);	// autoload :quizId
 
 // Definición de las rutas de /quizes
-router.get('/quizes', quizController.index);
+router.get('/quizes', quizController.index);	// El parametro search és opcional
 router.get('/quizes/:quizId(\\d+)', quizController.show);
 router.get('/quizes/:quizId(\\d+)/answer', quizController.answer);
 
