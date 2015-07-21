@@ -26,7 +26,7 @@ exports.index = function(req, res) {
 	// No nos pasan nigun filtro
 	if (buscar === '') {
 		models.Quiz.findAll().then(function(quizes) {
-			res.render('quizes/index', {quizes: quizes});
+			res.render('quizes/index', {quizes: quizes, errors: []});
 
 		});
 
@@ -38,7 +38,7 @@ exports.index = function(req, res) {
 		buscar = buscar.replace(/ /g, '%');
 
 		models.Quiz.findAll({where: ["pregunta like ?", '%' + buscar + '%'], order: 'pregunta'}).then(function(quizes) {
-			res.render('quizes/index', {quizes: quizes});
+			res.render('quizes/index', {quizes: quizes, errors: []});
 
 		});		
 
@@ -49,7 +49,7 @@ exports.index = function(req, res) {
 // GET /quizes/:id
 exports.show = function(req, res) {
 	models.Quiz.find(req.params.quizId).then(function(quiz) {
-		res.render('quizes/show', {quiz: quiz});
+		res.render('quizes/show', {quiz: quiz, errors: []});
 
 	});
 
@@ -59,10 +59,10 @@ exports.show = function(req, res) {
 exports.answer = function(req, res) {
 	models.Quiz.find(req.params.quizId).then(function(quiz) {
 		if (req.query.respuesta === quiz.respuesta) {
-			res.render('quizes/answer', {quiz: quiz, respuesta: 'Correcto'});
+			res.render('quizes/answer', {quiz: quiz, respuesta: 'Correcto', errors: []});
 
 		} else {
-			res.render('quizes/answer', {quiz: quiz, respuesta: 'Incorrecto'});
+			res.render('quizes/answer', {quiz: quiz, respuesta: 'Incorrecto', errors: []});
 
 		}
 
@@ -76,7 +76,7 @@ exports.new = function(req, res) {
 		{pregunta: 'Pregunta', respuesta: 'Respuesta'}
 	);
 
-	res.render('quizes/new', {quiz: quiz});
+	res.render('quizes/new', {quiz: quiz, errors: []});
 
 };
 
@@ -84,13 +84,25 @@ exports.new = function(req, res) {
 exports.create = function(req, res) {
 	var quiz = models.Quiz.build( req.body.quiz );
 
-	// guarda en DB los campos pregunta y respuesta de quiz
-	quiz.save({fields: ["pregunta", "respuesta"]}).
-		then( function() { res.redirect('/quizes'); }); // Redirección HTTP (URL relativo) lista de preguntas
+	quiz.validate().then(
+		function(err) {
+			if (err) {
+				res.render('quizes/new', {quiz: quiz, errors: err.errors});
+
+			} else {
+				// guarda en DB los campos pregunta y respuesta de quiz
+				quiz.save({fields: ["pregunta", "respuesta"]}).
+					then( function() { res.redirect('/quizes'); }); // Redirección HTTP (URL relativo) lista de preguntas
+
+			}
+
+		}
+
+	);
 
 };
 
 exports.author = function(req, res) {
-	res.render('author', {});
+	res.render('author', {errors: []});
 
 };
