@@ -32,11 +32,11 @@
 	</nav>
 
 	<section class="main" id="s1">
-		<% if (errors.lenght) { %>
+		<% if (errors.length) { %>
 			<span id="ErrorMsg">
 				Corregir errores:<br/>
 				<% for (var i in errors) { %>
-					<span><%= errors[i].message %></span><br/>
+					<span><%= errors[i] %></span><br/>
 				<% } %>
 
 			</span>
