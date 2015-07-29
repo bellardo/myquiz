@@ -19,16 +19,19 @@ exports.load = function(req, res, next, quizId) {
 
 };
 
-// GET /quizes/:search
+// GET /quizes
 exports.index = function(req, res) {
 	var buscar = req.query.search || '';
 
 	// No nos pasan nigun filtro
 	if (buscar === '') {
-		models.Quiz.findAll().then(function(quizes) {
-			res.render('quizes/index', {quizes: quizes, errors: []});
+		models.Quiz.findAll().then(
+			function(quizes) {
+				res.render('quizes/index', {quizes: quizes, errors: []});
 
-		});
+			}
+
+		).catch(function(error) { next(error); });
 
 	} else {
 		// Reemplazamos los espacions por %
@@ -37,10 +40,13 @@ exports.index = function(req, res) {
 		// independientemente de lo que haya entre "uno" y "dos".
 		buscar = buscar.replace(/ /g, '%');
 
-		models.Quiz.findAll({where: ["pregunta like ?", '%' + buscar + '%'], order: 'pregunta'}).then(function(quizes) {
-			res.render('quizes/index', {quizes: quizes, errors: []});
+		models.Quiz.findAll({where: ["pregunta like ?", '%' + buscar + '%'], order: 'pregunta'}).then(
+			function(quizes) {
+				res.render('quizes/index', {quizes: quizes, errors: []});
 
-		});		
+			}
+
+		).catch(function(error) { next(error); });		
 
 	}
 
@@ -141,6 +147,15 @@ exports.update = function(req, res) {
 			then( function() { res.redirect('/quizes'); }); // Redirección HTTP lista de preguntas (URL relativo)
 
 	}
+
+};
+
+// DELETE /quizes/:id
+exports.destroy = function(req, res) {
+	req.quiz.destroy().then(
+		function() { res.redirect('/quizes'); }
+
+	).catch(function(error) { next(error); });
 
 };
 
