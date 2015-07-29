@@ -87,6 +87,10 @@ exports.create = function(req, res) {
 	var hay_error = quiz.validate();
 
 	if (hay_error) {
+		// Los errores són devueltos con el formato:
+ 		// { pregunta: [ '-> Falta Pregunta' ], respuesta: [ '-> Falta Respuesta' ] }
+
+		// Recuperamos los errores
 		var errs = [];
 		for (var i in hay_error) {
 			errs = errs.concat(hay_error[i]);
@@ -99,6 +103,42 @@ exports.create = function(req, res) {
 		// guarda en DB los campos pregunta y respuesta de quiz
 		quiz.save({fields: ["pregunta", "respuesta"]}).
 			then( function() { res.redirect('/quizes'); }); // Redirección HTTP (URL relativo) lista de preguntas
+
+	}
+
+};
+
+// GET /quizes/:id/edit
+exports.edit = function(req, res) {
+	var quiz = req.quiz; // autoload de instancia de quiz
+
+	res.render('quizes/edit', {quiz: quiz, errors: []});
+
+};
+
+// PUT /quizes/:id
+exports.update = function(req, res) {
+	// Una vez pre-cargado el objeto quiz (autoload: :quizId)
+	// lo actualizamos con los valores enviados desde el formulario
+	req.quiz.pregunta = req.body.quiz.pregunta;
+	req.quiz.respuesta = req.body.quiz.respuesta;
+
+	var hay_error = req.quiz.validate();
+
+	if (hay_error) {
+		// Recuperamos los errores
+		var errs = [];
+		for (var i in hay_error) {
+			errs = errs.concat(hay_error[i]);
+
+		}
+
+		res.render('quizes/edit', {quiz: req.quiz, errors: errs});
+
+	} else {
+		// save: guarda los campos pregunta y respuesta en DB
+		req.quiz.save({fields: ["pregunta", "respuesta"]}).
+			then( function() { res.redirect('/quizes'); }); // Redirección HTTP lista de preguntas (URL relativo)
 
 	}
 
