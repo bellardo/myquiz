@@ -20,7 +20,7 @@ exports.load = function(req, res, next, quizId) {
 };
 
 // GET /quizes
-exports.index = function(req, res, next) {
+exports.index = function(req, res) {
 	var buscar = req.query.search || '';
 
 	// No nos pasan nigun filtro
@@ -31,7 +31,7 @@ exports.index = function(req, res, next) {
 
 			}
 
-		).catch(function(error) { next(error); });
+		);
 
 	} else {
 		// Reemplazamos los espacions por %
@@ -46,26 +46,26 @@ exports.index = function(req, res, next) {
 
 			}
 
-		).catch(function(error) { next(error); });		
+		);		
 
 	}
 
 };
 
 // GET /quizes/:id
-exports.show = function(req, res, next) {
+exports.show = function(req, res) {
 	models.Quiz.find(req.params.quizId).then(
 		function(quiz) {
 			res.render('quizes/show', {quiz: quiz, errors: []});
 
 		}
 
-	).catch(function(error) { next(error); });
+	);
 
 };
 
 // GET /quizes/:id/answer
-exports.answer = function(req, res, next) {
+exports.answer = function(req, res) {
 	models.Quiz.find(req.params.quizId).then(
 		function(quiz) {
 			if (req.query.respuesta === quiz.respuesta) {
@@ -77,7 +77,7 @@ exports.answer = function(req, res, next) {
 			}
 		}
 
-	).catch(function(error) { next(error); });
+	);
 	
 };
 
@@ -92,7 +92,7 @@ exports.new = function(req, res) {
 };
 
 // POST /quizes/create
-exports.create = function(req, res, next) {
+exports.create = function(req, res) {
 	var quiz = models.Quiz.build( req.body.quiz );
 
 	var hay_error = quiz.validate();
@@ -118,7 +118,7 @@ exports.create = function(req, res, next) {
 
 			}
 
-		).catch(function(error) { next(error); }); 
+		); 
 
 	}
 
@@ -133,7 +133,7 @@ exports.edit = function(req, res) {
 };
 
 // PUT /quizes/:id
-exports.update = function(req, res, next) {
+exports.update = function(req, res) {
 	// Una vez pre-cargado el objeto quiz (autoload: :quizId)
 	// lo actualizamos con los valores enviados desde el formulario
 	req.quiz.pregunta = req.body.quiz.pregunta;
@@ -158,18 +158,18 @@ exports.update = function(req, res, next) {
 			// Redirección HTTP lista de preguntas (URL relativo)
 			function() { res.redirect('/quizes'); }
 
-		).catch(function(error) { next(error); }); 
+		); 
 
 	}
 
 };
 
 // DELETE /quizes/:id
-exports.destroy = function(req, res, next) {
+exports.destroy = function(req, res) {
 	req.quiz.destroy().then(
 		function() { res.redirect('/quizes'); }
 
-	).catch(function(error) { next(error); });
+	);
 
 };
 
