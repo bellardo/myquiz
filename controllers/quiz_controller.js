@@ -97,32 +97,53 @@ exports.new = function(req, res) {
 exports.create = function(req, res) {
 	var quiz = models.Quiz.build( req.body.quiz );
 
-	var hay_error = quiz.validate();
+	// var hay_error = quiz.validate();
 
-	if (hay_error) {
-		// Los errores són devueltos con el formato:
- 		// { pregunta: [ '-> Falta Pregunta' ], respuesta: [ '-> Falta Respuesta' ] }
+	// if (hay_error) {
+	// 	// Los errores són devueltos con el formato:
+	// 	// { pregunta: [ '-> Falta Pregunta' ], respuesta: [ '-> Falta Respuesta' ] }
 
-		// Recuperamos los errores
-		var errs = [];
-		for (var i in hay_error) {
-			errs = errs.concat(hay_error[i]);
+	// 	// Recuperamos los errores
+	// 	var errs = [];
+	// 	for (var i in hay_error) {
+	// 		errs = errs.concat(hay_error[i]);
 
-		}
+	// 	}
 
-		res.render('quizes/new', {quiz: quiz, errors: errs});
+	// 	res.render('quizes/new', {quiz: quiz, errors: errs});
 
-	} else {
-		// guarda en DB los campos pregunta y respuesta de quiz
-		quiz.save({fields: ["pregunta", "respuesta", "tema"]}).then(
-			function() {
-				res.redirect('/quizes'); // Redirección HTTP (URL relativo) lista de preguntas
+	// } else {
+	// 	// guarda en DB los campos pregunta y respuesta de quiz
+	// 	quiz.save({fields: ["pregunta", "respuesta", "tema"]}).then(
+	// 		function() {
+	// 			res.redirect('/quizes'); // Redirección HTTP (URL relativo) lista de preguntas
+
+	// 		}
+
+	// 	); 
+
+	// }
+
+	quiz.validate().then(
+		function(err) {
+			if (err) {
+				res.render('quizes/new', {quiz: quiz, errors: err.errors});
+
+			} else {
+				// save: guarda los campos pregunta y respuesta en DB
+				quiz.save({fields: ["pregunta", "respuesta", "tema"]}).then(
+					function() {
+						res.redirect('/quizes'); // Redirección HTTP (URL relativo) lista de preguntas
+
+					}
+
+				); 
 
 			}
 
-		); 
+		}
 
-	}
+	);
 
 };
 
@@ -142,27 +163,46 @@ exports.update = function(req, res) {
 	req.quiz.respuesta = req.body.quiz.respuesta;
 	req.quiz.tema = req.body.quiz.tema;
 
-	var hay_error = req.quiz.validate();
+	// var hay_error = req.quiz.validate();
 
-	if (hay_error) {
-		// Recuperamos los errores
-		var errs = [];
-		for (var i in hay_error) {
-			errs = errs.concat(hay_error[i]);
+	// if (hay_error) {
+	// 	// Recuperamos los errores
+	// 	var errs = [];
+	// 	for (var i in hay_error) {
+	// 		errs = errs.concat(hay_error[i]);
+
+	// 	}
+
+	// 	res.render('quizes/edit', {quiz: req.quiz, errors: errs});
+
+	// } else {
+	// 	// save: guarda los campos pregunta y respuesta en DB
+	// 	req.quiz.save({fields: ["pregunta", "respuesta", "tema"]}).then(
+	// 		// Redirección HTTP lista de preguntas (URL relativo)
+	// 		function() { res.redirect('/quizes'); }
+
+	// 	); 
+
+	// }
+
+	req.quiz.validate().then(
+		function(err) {
+			if (err) {
+				res.render('quizes/edit', {quiz: req.quiz, errors: err.errors});
+
+			} else {
+				// save: guarda los campos pregunta y respuesta en DB
+				req.quiz.save({fields: ["pregunta", "respuesta", "tema"]}).then(
+					// Redirección HTTP lista de preguntas (URL relativo)
+					function() { res.redirect('/quizes'); }
+
+				); 
+
+			}
 
 		}
 
-		res.render('quizes/edit', {quiz: req.quiz, errors: errs});
-
-	} else {
-		// save: guarda los campos pregunta y respuesta en DB
-		req.quiz.save({fields: ["pregunta", "respuesta", "tema"]}).then(
-			// Redirección HTTP lista de preguntas (URL relativo)
-			function() { res.redirect('/quizes'); }
-
-		); 
-
-	}
+	);
 
 };
 
