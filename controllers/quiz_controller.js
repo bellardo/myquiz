@@ -100,6 +100,9 @@ exports.new = function(req, res) {
 exports.create = function(req, res) {
 	var quiz = models.Quiz.build( req.body.quiz );
 
+	//
+	// ^1.7.0 de sequelize --> 2.0.0-rc4
+	//
 	// var hay_error = quiz.validate();
 
 	// if (hay_error) {
