@@ -31,6 +31,17 @@ app.use(express.static(path.join(__dirname, 'public')));
 // Helpers dinàmicos
 app.use(
 	function(req, res, next) {
+		// Guardamos el instante en segundos en que entra la petición
+		var tm = Math.floor(new Date().getTime() / 1000);
+
+		// Si hemos iniciado sesión, comprobamos que las sesión siga activa
+		if (req.session.user && req.session.last_activity) {
+			if (tm > req.session.last_activity + 15)
+				delete req.session.user;
+		}
+
+		req.session.last_activity = tm;
+
 		// guardar path en session.redir para desués de login
 		if (!req.path.match(/\/login|\/logout/)) {
 			req.session.redir = req.path;
@@ -43,7 +54,6 @@ app.use(
 	}
 
 );
-
 
 
 app.use('/', routes);

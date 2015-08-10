@@ -1,7 +1,7 @@
 
 var users = {
 	admin: {id: 1, username: 'admin', password: '1234'},
-	jesus: {id: 2, username: 'Jesús Quemada', password: '5678'}
+	juan: {id: 2, username: 'Juan Quemada', password: '5678'}
 
 };
 
