@@ -36,13 +36,15 @@ app.use(
 
 		// Si hemos iniciado sesión, comprobamos que las sesión siga activa
 		if (req.session.user && req.session.last_activity) {
-			if (tm > req.session.last_activity + 15)
+			var mt = (2 * 60); // 2 minutos: tiempo máximo de inactividad (mt)
+			if (tm > req.session.last_activity + mt)	
 				delete req.session.user;
+
 		}
 
 		req.session.last_activity = tm;
 
-		// guardar path en session.redir para desués de login
+		// guardar path en session.redir para después de login
 		if (!req.path.match(/\/login|\/logout/)) {
 			req.session.redir = req.path;
 
@@ -51,6 +53,7 @@ app.use(
 		// Hacer visible req.session en las vistas
 		res.locals.session = req.session;
 		next();
+
 	}
 
 );
