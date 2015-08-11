@@ -1,0 +1,8 @@
+	<h3>Estadísticas de Quiz</h3>
+
+	<table class="tabla">
+		<tr><th>Estadística</th><th>Resultado</th></tr>
+		<% var i; for (i = 0; i < stats.length; i++) { %>
+			<tr><td><%= stats[i].name %></td><td class="numero"><%= stats[i].result %></td></tr>
+		<% } %>
+	</table>

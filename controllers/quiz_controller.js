@@ -225,3 +225,17 @@ exports.author = function(req, res) {
 	res.render('author', {errors: []});
 
 };
+
+// GET /quizes/statistics
+exports.statistics = function(req, res) {
+	var statisticsController = require('./statistics_controller');
+
+	statisticsController.calcular(
+		function(stats, errors) {
+			res.render('quizes/statistics', {stats: stats, errors: errors});
+
+		}
+
+	);
+
+};

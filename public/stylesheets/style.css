@@ -15,3 +15,23 @@ nav span { margin: 0px 10px 0px 0px; }
 #ErrorMsg { color: #f61; font-size: smaler}
 
 .right { float: right; }
+
+.tabla {
+	border: 1px solid #000;
+	border-collapse: collapse;
+	text-align: left;
+
+}
+
+.tabla th, .tabla td {
+	border: 1px solid #000;
+	padding: 5px;	
+
+}
+
+.tabla th {
+	text-align: center;
+
+}
+
+.numero td { text-align: right; }
