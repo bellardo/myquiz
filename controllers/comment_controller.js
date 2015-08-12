@@ -92,6 +92,6 @@ exports.publish = function(req, res) {
 			function() {
 				res.redirect('/quizes/' + req.params.quizId);
 			}
-		).catch(function(error){next(error)});
+		);
 
 };

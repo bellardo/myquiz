@@ -231,8 +231,8 @@ exports.statistics = function(req, res) {
 	var statisticsController = require('./statistics_controller');
 
 	statisticsController.calcular(
-		function(stats, errors) {
-			res.render('quizes/statistics', {stats: stats, errors: errors});
+		function(stats) {
+			res.render('quizes/statistics', {stats: stats, errors: []});
 
 		}
 

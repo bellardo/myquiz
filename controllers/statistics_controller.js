@@ -2,23 +2,57 @@
 var models = require('../models/models.js');
 
 exports.calcular = function(callback) {
-	var stats = [];
-	var num_preg = 1, num_com = 0,
-		prom_com_preg = 0, preg_sin_com = 0, preg_con_com = 0;
-
-	models.Quiz.findAll().then(	function(quizes) { num_preg = 2 /*quizes.length;*/ } );
-
 	// Estadísticas que tenemos que calcular
-	stats = [
-		{name: 'Número de preguntas', result: num_preg},
-		{name: 'Número de comentarios totales', result: num_com},
-		{name: 'Número medio de comentarios por pregunta', result: prom_com_preg},
-		{name: 'Número de preguntas sin comentarios', result: preg_sin_com},
-		{name: 'Número de preguntas con comentarios', result: preg_con_com}
+	var stats = [
+		{name: 'Número de preguntas', result: 0},
+		{name: 'Número de comentarios totales', result: 0},
+		{name: 'Número medio de comentarios por pregunta', result: 0},
+		{name: 'Número de preguntas sin comentarios', result: 0},
+		{name: 'Número de preguntas con comentarios', result: 0}
 
 	];
 
-	callback(stats, []);
+	models.Quiz.findAll().then(
+		function(quizes) {
+			stats[0].result = quizes.length; 
+
+			models.Comment.findAll().then(
+				function(comments) {
+					stats[1].result = comments.length; 
+					stats[2].result = round(stats[1].result / stats[0].result, 2);
+
+					models.Quiz.findAll( { include: [{model: models.Comment}] }).then(
+						function (quizes) {
+							var com = 0, nocom = 0;
+							
+							for (var i = 0; i < quizes.length; i++) {
+								if (quizes[i].Comments.length > 0)
+									com++;
+								else nocom++;
+
+							}
+
+							stats[3].result = nocom;
+							stats[4].result = com;
+
+							callback(stats);
+
+						}
+
+					);	
+
+				}					
+
+			);	
+
+		}
+
+	);
 
 };
 
+// Number(Math.round(1.005 + 'e2') + 'e-2'); // 1.01
+function round(value, decimals) {
+	return Number(Math.round(value + 'e' + decimals) + 'e-' + decimals);
+
+}
